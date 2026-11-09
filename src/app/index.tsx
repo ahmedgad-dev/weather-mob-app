@@ -1,98 +1,95 @@
-import * as Device from 'expo-device';
-import { Platform, StyleSheet } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { router, type Href } from 'expo-router';
+import { Pressable, RefreshControl, ScrollView, StyleSheet, Text, View } from 'react-native';
 
-import { AnimatedIcon } from '@/components/animated-icon';
-import { HintRow } from '@/components/hint-row';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { WebBadge } from '@/components/web-badge';
-import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
+import { ScreenState } from '@/components/screen-state';
+import { describeWeather } from '@/constants/weather-codes';
+import { useForecast } from '@/context/forecast-context';
+import { useColors } from '@/hooks/use-colors';
+import { formatTemperature } from '@/utils/format';
 
-function getDevMenuHint() {
-  if (Platform.OS === 'web') {
-    return <ThemedText type="small">use browser devtools</ThemedText>;
+export default function TodayScreen() {
+  const { city, forecast, error, isLoading, isRefreshing, refresh } = useForecast();
+  const colors = useColors();
+
+  if (!forecast) {
+    return <ScreenState isBusy={isLoading || isRefreshing} error={error} onRetry={refresh} />;
   }
-  if (Device.isDevice) {
-    return (
-      <ThemedText type="small">
-        shake device or press <ThemedText type="code">m</ThemedText> in terminal
-      </ThemedText>
-    );
-  }
-  const shortcut = Platform.OS === 'android' ? 'cmd+m (or ctrl+m)' : 'cmd+d';
+
+  const { current } = forecast;
+  const today = forecast.daily[0];
+  const weather = describeWeather(current.weatherCode, current.isDay);
+
   return (
-    <ThemedText type="small">
-      press <ThemedText type="code">{shortcut}</ThemedText>
-    </ThemedText>
+    <ScrollView
+      contentContainerStyle={styles.container}
+      refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={refresh} />}>
+      <View style={styles.hero}>
+        <Text style={[styles.city, { color: colors.text }]}>{city.name}</Text>
+        <Text style={styles.icon}>{weather.icon}</Text>
+        <Text style={[styles.temperature, { color: colors.text }]}>
+          {formatTemperature(current.temperature)}
+        </Text>
+        <Text style={[styles.condition, { color: colors.muted }]}>{weather.label}</Text>
+        <Text style={{ color: colors.muted }}>
+          H: {formatTemperature(today.max)} L: {formatTemperature(today.min)}
+        </Text>
+      </View>
+
+      <View style={[styles.card, { backgroundColor: colors.card }]}>
+        <Detail label="Feels like" value={formatTemperature(current.feelsLike)} />
+        <Detail label="Humidity" value={`${current.humidity}%`} />
+        <Detail label="Wind" value={`${Math.round(current.windSpeed)} km/h`} />
+      </View>
+
+      <NavRow href="/hourly" label="Next 24 hours" />
+      <NavRow href="/daily" label="7-day forecast" />
+    </ScrollView>
   );
 }
 
-export default function HomeScreen() {
+function Detail({ label, value }: { label: string; value: string }) {
+  const colors = useColors();
+
   return (
-    <ThemedView style={styles.container}>
-      <SafeAreaView style={styles.safeArea}>
-        <ThemedView style={styles.heroSection}>
-          <AnimatedIcon />
-          <ThemedText type="title" style={styles.title}>
-            Welcome to&nbsp;Expo
-          </ThemedText>
-        </ThemedView>
+    <View style={styles.detail}>
+      <Text style={{ color: colors.muted }}>{label}</Text>
+      <Text style={[styles.detailValue, { color: colors.text }]}>{value}</Text>
+    </View>
+  );
+}
 
-        <ThemedText type="code" style={styles.code}>
-          get started
-        </ThemedText>
+function NavRow({ href, label }: { href: Href; label: string }) {
+  const colors = useColors();
 
-        <ThemedView type="backgroundElement" style={styles.stepContainer}>
-          <HintRow
-            title="Try editing"
-            hint={<ThemedText type="code">src/app/index.tsx</ThemedText>}
-          />
-          <HintRow title="Dev tools" hint={getDevMenuHint()} />
-          <HintRow
-            title="Fresh start"
-            hint={<ThemedText type="code">npm run reset-project</ThemedText>}
-          />
-        </ThemedView>
-
-        {Platform.OS === 'web' && <WebBadge />}
-      </SafeAreaView>
-    </ThemedView>
+  return (
+    <Pressable
+      onPress={() => router.push(href)}
+      style={({ pressed }) => [
+        styles.navRow,
+        { backgroundColor: colors.card, opacity: pressed ? 0.6 : 1 },
+      ]}>
+      <Text style={[styles.navLabel, { color: colors.text }]}>{label}</Text>
+      <Text style={[styles.navLabel, { color: colors.muted }]}>›</Text>
+    </Pressable>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
+  container: { padding: 16, gap: 16 },
+  hero: { alignItems: 'center', paddingVertical: 24, gap: 4 },
+  city: { fontSize: 28, fontWeight: '600' },
+  icon: { fontSize: 64, lineHeight: 80 },
+  temperature: { fontSize: 72, fontWeight: '200' },
+  condition: { fontSize: 18 },
+  card: { flexDirection: 'row', padding: 16, borderRadius: 16 },
+  detail: { flex: 1, alignItems: 'center', gap: 4 },
+  detailValue: { fontSize: 18, fontWeight: '600' },
+  navRow: {
     flexDirection: 'row',
-  },
-  safeArea: {
-    flex: 1,
-    paddingHorizontal: Spacing.four,
+    justifyContent: 'space-between',
     alignItems: 'center',
-    gap: Spacing.three,
-    paddingBottom: BottomTabInset + Spacing.three,
-    maxWidth: MaxContentWidth,
+    padding: 16,
+    borderRadius: 16,
   },
-  heroSection: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    flex: 1,
-    paddingHorizontal: Spacing.four,
-    gap: Spacing.four,
-  },
-  title: {
-    textAlign: 'center',
-  },
-  code: {
-    textTransform: 'uppercase',
-  },
-  stepContainer: {
-    gap: Spacing.three,
-    alignSelf: 'stretch',
-    paddingHorizontal: Spacing.three,
-    paddingVertical: Spacing.four,
-    borderRadius: Spacing.four,
-  },
+  navLabel: { fontSize: 17, fontWeight: '500' },
 });
