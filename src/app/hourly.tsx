@@ -1,17 +1,22 @@
 import { FlatList, StyleSheet, Text, View } from 'react-native';
 
 import { ScreenState } from '@/components/screen-state';
+import { DEFAULT_CITY } from '@/constants/cities';
 import { describeWeather } from '@/constants/weather-codes';
-import { useForecast } from '@/context/forecast-context';
 import { useColors } from '@/hooks/use-colors';
+import { useForecast } from '@/hooks/use-forecast';
+import { useRefreshByUser } from '@/hooks/use-refresh-by-user';
 import { formatHour, formatTemperature } from '@/utils/format';
 
 export default function HourlyScreen() {
-  const { forecast, error, isLoading, isRefreshing, refresh } = useForecast();
+  const { data: forecast, error, isFetching, refetch } = useForecast(DEFAULT_CITY);
+  const { isRefreshingByUser, refreshByUser } = useRefreshByUser(refetch);
   const colors = useColors();
 
   if (!forecast) {
-    return <ScreenState isBusy={isLoading || isRefreshing} error={error} onRetry={refresh} />;
+    return (
+      <ScreenState isBusy={isFetching} error={error?.message ?? null} onRetry={() => refetch()} />
+    );
   }
 
   const currentHour = forecast.current.time.slice(0, 13);
@@ -24,8 +29,8 @@ export default function HourlyScreen() {
       data={next24Hours}
       keyExtractor={(hour) => hour.time}
       contentContainerStyle={styles.list}
-      refreshing={isRefreshing}
-      onRefresh={refresh}
+      refreshing={isRefreshingByUser}
+      onRefresh={refreshByUser}
       renderItem={({ item, index }) => {
         const weather = describeWeather(item.weatherCode, item.isDay);
 

@@ -2,17 +2,23 @@ import { router, type Href } from 'expo-router';
 import { Pressable, RefreshControl, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import { ScreenState } from '@/components/screen-state';
+import { DEFAULT_CITY } from '@/constants/cities';
 import { describeWeather } from '@/constants/weather-codes';
-import { useForecast } from '@/context/forecast-context';
 import { useColors } from '@/hooks/use-colors';
+import { useForecast } from '@/hooks/use-forecast';
+import { useRefreshByUser } from '@/hooks/use-refresh-by-user';
 import { formatTemperature } from '@/utils/format';
 
 export default function TodayScreen() {
-  const { city, forecast, error, isLoading, isRefreshing, refresh } = useForecast();
+  const city = DEFAULT_CITY;
+  const { data: forecast, error, isFetching, refetch } = useForecast(city);
+  const { isRefreshingByUser, refreshByUser } = useRefreshByUser(refetch);
   const colors = useColors();
 
   if (!forecast) {
-    return <ScreenState isBusy={isLoading || isRefreshing} error={error} onRetry={refresh} />;
+    return (
+      <ScreenState isBusy={isFetching} error={error?.message ?? null} onRetry={() => refetch()} />
+    );
   }
 
   const { current } = forecast;
@@ -22,7 +28,7 @@ export default function TodayScreen() {
   return (
     <ScrollView
       contentContainerStyle={styles.container}
-      refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={refresh} />}>
+      refreshControl={<RefreshControl refreshing={isRefreshingByUser} onRefresh={refreshByUser} />}>
       <View style={styles.hero}>
         <Text style={[styles.city, { color: colors.text }]}>{city.name}</Text>
         <Text style={styles.icon}>{weather.icon}</Text>
