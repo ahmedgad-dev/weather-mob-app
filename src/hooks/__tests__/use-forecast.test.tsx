@@ -38,6 +38,19 @@ function createWrapper() {
 }
 
 describe('useForecast', () => {
+  beforeEach(() => {
+    mockedFetchForecast.mockReset();
+  });
+
+  it('waits without fetching until it has coordinates', async () => {
+    const { result } = await renderHook(() => useForecast(undefined), {
+      wrapper: createWrapper(),
+    });
+
+    expect(result.current.fetchStatus).toBe('idle');
+    expect(mockedFetchForecast).not.toHaveBeenCalled();
+  });
+
   it('loads the forecast for the city', async () => {
     mockedFetchForecast.mockResolvedValue(forecast);
 

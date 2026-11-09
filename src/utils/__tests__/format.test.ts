@@ -1,4 +1,20 @@
-import { formatDay, formatHour, formatTemperature } from '../format';
+import { formatDay, formatHour, formatPlace, formatTemperature } from '../format';
+
+describe('formatPlace', () => {
+  const base = { id: 1, latitude: 0, longitude: 0 };
+
+  it('joins region and country', () => {
+    expect(
+      formatPlace({ ...base, name: 'Jeddah', region: 'Makkah', country: 'Saudi Arabia' })
+    ).toBe('Makkah, Saudi Arabia');
+  });
+
+  it('skips a region that repeats the city name', () => {
+    expect(
+      formatPlace({ ...base, name: 'Dubai', region: 'Dubai', country: 'United Arab Emirates' })
+    ).toBe('United Arab Emirates');
+  });
+});
 
 describe('formatTemperature', () => {
   it('rounds to a whole degree', () => {

@@ -1,24 +1,32 @@
 import { QueryClientProvider } from '@tanstack/react-query';
-import { DarkTheme, DefaultTheme, Stack, ThemeProvider } from 'expo-router';
-import { useColorScheme } from 'react-native';
+import { DarkTheme, Stack, ThemeProvider } from 'expo-router';
+import { StatusBar } from 'expo-status-bar';
+import { StyleSheet } from 'react-native';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 import { useAppStateFocus } from '@/hooks/use-app-state-focus';
 import { queryClient } from '@/lib/query-client';
+import { NIGHT_SKY } from '@/theme/sky';
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
-
   useAppStateFocus();
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-        <Stack>
-          <Stack.Screen name="index" options={{ title: 'Today' }} />
-          <Stack.Screen name="hourly" options={{ title: 'Next 24 hours' }} />
-          <Stack.Screen name="daily" options={{ title: '7-day forecast' }} />
-        </Stack>
-      </ThemeProvider>
-    </QueryClientProvider>
+    <GestureHandlerRootView style={styles.root}>
+      <QueryClientProvider client={queryClient}>
+        <ThemeProvider value={DarkTheme}>
+          <StatusBar style="light" />
+          <Stack screenOptions={{ headerShown: false, contentStyle: styles.screen }}>
+            <Stack.Screen name="index" />
+            <Stack.Screen name="city/[id]" />
+          </Stack>
+        </ThemeProvider>
+      </QueryClientProvider>
+    </GestureHandlerRootView>
   );
 }
+
+const styles = StyleSheet.create({
+  root: { flex: 1 },
+  screen: { backgroundColor: NIGHT_SKY[0] },
+});

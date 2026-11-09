@@ -1,6 +1,7 @@
-import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, Pressable, StyleSheet, View } from 'react-native';
 
-import { useColors } from '@/hooks/use-colors';
+import { AppText } from '@/components/ui/app-text';
+import { colors, radius, spacing } from '@/theme/tokens';
 
 type Props = {
   isBusy: boolean;
@@ -9,25 +10,19 @@ type Props = {
 };
 
 export function ScreenState({ isBusy, error, onRetry }: Props) {
-  const colors = useColors();
-
   return (
     <View style={styles.container}>
       {isBusy ? (
-        <ActivityIndicator size="large" />
+        <ActivityIndicator size="large" color={colors.textPrimary} />
       ) : (
         <>
-          <Text style={[styles.title, { color: colors.text }]}>
-            Couldn&apos;t load the forecast
-          </Text>
-          {error ? <Text style={{ color: colors.muted }}>{error}</Text> : null}
+          <AppText variant="headline">Couldn&apos;t load the forecast</AppText>
+          {error ? <AppText tone="secondary">{error}</AppText> : null}
           <Pressable
             onPress={onRetry}
-            style={({ pressed }) => [
-              styles.button,
-              { backgroundColor: colors.tint, opacity: pressed ? 0.7 : 1 },
-            ]}>
-            <Text style={styles.buttonText}>Try again</Text>
+            accessibilityRole="button"
+            style={({ pressed }) => [styles.button, { opacity: pressed ? 0.6 : 1 }]}>
+            <AppText variant="body">Try again</AppText>
           </Pressable>
         </>
       )}
@@ -36,8 +31,20 @@ export function ScreenState({ isBusy, error, onRetry }: Props) {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: 12, padding: 24 },
-  title: { fontSize: 18, fontWeight: '600' },
-  button: { marginTop: 8, paddingHorizontal: 20, paddingVertical: 12, borderRadius: 12 },
-  buttonText: { color: '#FFFFFF', fontSize: 16, fontWeight: '600' },
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: spacing.md,
+    padding: spacing.xl,
+  },
+  button: {
+    marginTop: spacing.sm,
+    paddingHorizontal: spacing.xl,
+    paddingVertical: spacing.md,
+    borderRadius: radius.pill,
+    backgroundColor: colors.glass,
+    borderColor: colors.glassBorder,
+    borderWidth: StyleSheet.hairlineWidth,
+  },
 });

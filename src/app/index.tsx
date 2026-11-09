@@ -1,101 +1,136 @@
-import { router, type Href } from 'expo-router';
-import { Pressable, RefreshControl, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { useQueryClient } from '@tanstack/react-query';
+import { router } from 'expo-router';
+import { useState } from 'react';
+import { FlatList, Keyboard, Pressable, RefreshControl, StyleSheet, View } from 'react-native';
+import ReanimatedSwipeable from 'react-native-gesture-handler/ReanimatedSwipeable';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { ScreenState } from '@/components/screen-state';
-import { DEFAULT_CITY } from '@/constants/cities';
-import { describeWeather } from '@/constants/weather-codes';
-import { useColors } from '@/hooks/use-colors';
-import { useForecast } from '@/hooks/use-forecast';
+import type { City } from '@/api/geocoding';
+import { CityCard } from '@/components/city-card';
+import { LocationCard } from '@/components/location-card';
+import { SearchField } from '@/components/search-field';
+import { SearchResults } from '@/components/search-results';
+import { AppText } from '@/components/ui/app-text';
+import { Icon } from '@/components/ui/icon';
+import { SkyBackground } from '@/components/ui/sky-background';
+import { useCitySearch } from '@/hooks/use-city-search';
 import { useRefreshByUser } from '@/hooks/use-refresh-by-user';
-import { formatTemperature } from '@/utils/format';
+import { useCitiesHydrated, useCitiesStore } from '@/store/cities-store';
+import { NIGHT_SKY } from '@/theme/sky';
+import { colors, radius, spacing } from '@/theme/tokens';
 
-export default function TodayScreen() {
-  const city = DEFAULT_CITY;
-  const { data: forecast, error, isFetching, refetch } = useForecast(city);
-  const { isRefreshingByUser, refreshByUser } = useRefreshByUser(refetch);
-  const colors = useColors();
+export default function HomeScreen() {
+  const insets = useSafeAreaInsets();
+  const queryClient = useQueryClient();
+  const [query, setQuery] = useState('');
+  const search = useCitySearch(query);
+  const hydrated = useCitiesHydrated();
+  const cities = useCitiesStore((state) => state.cities);
+  const addCity = useCitiesStore((state) => state.addCity);
+  const removeCity = useCitiesStore((state) => state.removeCity);
+  const isSearching = query.trim().length > 0;
+  const { isRefreshingByUser, refreshByUser } = useRefreshByUser(() =>
+    Promise.all([
+      queryClient.refetchQueries({ queryKey: ['current-location'] }),
+      queryClient.refetchQueries({ queryKey: ['forecast'] }),
+    ])
+  );
 
-  if (!forecast) {
-    return (
-      <ScreenState isBusy={isFetching} error={error?.message ?? null} onRetry={() => refetch()} />
-    );
+  function saveCity(city: City) {
+    addCity(city);
+    setQuery('');
+    Keyboard.dismiss();
   }
 
-  const { current } = forecast;
-  const today = forecast.daily[0];
-  const weather = describeWeather(current.weatherCode, current.isDay);
-
   return (
-    <ScrollView
-      contentContainerStyle={styles.container}
-      refreshControl={<RefreshControl refreshing={isRefreshingByUser} onRefresh={refreshByUser} />}>
-      <View style={styles.hero}>
-        <Text style={[styles.city, { color: colors.text }]}>{city.name}</Text>
-        <Text style={styles.icon}>{weather.icon}</Text>
-        <Text style={[styles.temperature, { color: colors.text }]}>
-          {formatTemperature(current.temperature)}
-        </Text>
-        <Text style={[styles.condition, { color: colors.muted }]}>{weather.label}</Text>
-        <Text style={{ color: colors.muted }}>
-          H: {formatTemperature(today.max)} L: {formatTemperature(today.min)}
-        </Text>
-      </View>
-
-      <View style={[styles.card, { backgroundColor: colors.card }]}>
-        <Detail label="Feels like" value={formatTemperature(current.feelsLike)} />
-        <Detail label="Humidity" value={`${current.humidity}%`} />
-        <Detail label="Wind" value={`${Math.round(current.windSpeed)} km/h`} />
-      </View>
-
-      <NavRow href="/hourly" label="Next 24 hours" />
-      <NavRow href="/daily" label="7-day forecast" />
-    </ScrollView>
-  );
-}
-
-function Detail({ label, value }: { label: string; value: string }) {
-  const colors = useColors();
-
-  return (
-    <View style={styles.detail}>
-      <Text style={{ color: colors.muted }}>{label}</Text>
-      <Text style={[styles.detailValue, { color: colors.text }]}>{value}</Text>
-    </View>
-  );
-}
-
-function NavRow({ href, label }: { href: Href; label: string }) {
-  const colors = useColors();
-
-  return (
-    <Pressable
-      onPress={() => router.push(href)}
-      style={({ pressed }) => [
-        styles.navRow,
-        { backgroundColor: colors.card, opacity: pressed ? 0.6 : 1 },
-      ]}>
-      <Text style={[styles.navLabel, { color: colors.text }]}>{label}</Text>
-      <Text style={[styles.navLabel, { color: colors.muted }]}>›</Text>
-    </Pressable>
+    <SkyBackground sky={NIGHT_SKY}>
+      <FlatList
+        data={isSearching || !hydrated ? [] : cities}
+        keyExtractor={(city) => String(city.id)}
+        keyboardShouldPersistTaps="handled"
+        keyboardDismissMode="on-drag"
+        contentContainerStyle={[
+          styles.list,
+          { paddingTop: insets.top + spacing.lg, paddingBottom: insets.bottom + spacing.xl },
+        ]}
+        refreshControl={
+          <RefreshControl
+            refreshing={isRefreshingByUser}
+            onRefresh={refreshByUser}
+            tintColor={colors.textPrimary}
+          />
+        }
+        // An element, not an inline component: a new component type each render would remount
+        // the TextInput and close the keyboard after every letter.
+        ListHeaderComponent={
+          <View style={styles.header}>
+            <AppText variant="title">Weather</AppText>
+            <SearchField value={query} onChangeText={setQuery} isLoading={search.isFetching} />
+            {isSearching ? (
+              <SearchResults
+                query={query}
+                results={search.data ?? []}
+                isFetching={search.isFetching}
+                isError={search.isError}
+                savedIds={new Set(cities.map((city) => city.id))}
+                onSelect={saveCity}
+              />
+            ) : (
+              <>
+                <LocationCard />
+                {cities.length > 0 ? (
+                  <AppText variant="label" tone="tertiary" style={styles.section}>
+                    Saved cities
+                  </AppText>
+                ) : null}
+              </>
+            )}
+          </View>
+        }
+        renderItem={({ item }) => (
+          <ReanimatedSwipeable
+            friction={2}
+            rightThreshold={40}
+            overshootRight={false}
+            renderRightActions={() => (
+              <Pressable
+                onPress={() => removeCity(item.id)}
+                accessibilityRole="button"
+                accessibilityLabel={`Remove ${item.name}`}
+                style={styles.deleteAction}>
+                <Icon name="delete" size={22} />
+              </Pressable>
+            )}>
+            <CityCard
+              city={item}
+              onPress={() =>
+                router.push({ pathname: '/city/[id]', params: { id: String(item.id) } })
+              }
+            />
+          </ReanimatedSwipeable>
+        )}
+      />
+    </SkyBackground>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { padding: 16, gap: 16 },
-  hero: { alignItems: 'center', paddingVertical: 24, gap: 4 },
-  city: { fontSize: 28, fontWeight: '600' },
-  icon: { fontSize: 64, lineHeight: 80 },
-  temperature: { fontSize: 72, fontWeight: '200' },
-  condition: { fontSize: 18 },
-  card: { flexDirection: 'row', padding: 16, borderRadius: 16 },
-  detail: { flex: 1, alignItems: 'center', gap: 4 },
-  detailValue: { fontSize: 18, fontWeight: '600' },
-  navRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: 16,
-    borderRadius: 16,
+  list: {
+    paddingHorizontal: spacing.lg,
+    gap: spacing.md,
   },
-  navLabel: { fontSize: 17, fontWeight: '500' },
+  header: {
+    gap: spacing.lg,
+  },
+  section: {
+    marginTop: spacing.sm,
+  },
+  deleteAction: {
+    width: 80,
+    marginLeft: spacing.sm,
+    borderRadius: radius.lg,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: colors.danger,
+  },
 });

@@ -1,45 +1,42 @@
+export type WeatherKind =
+  'clear' | 'partlyCloudy' | 'cloudy' | 'fog' | 'drizzle' | 'rain' | 'snow' | 'storm' | 'hail';
+
 type WeatherInfo = {
   label: string;
-  icon: string;
+  kind: WeatherKind;
 };
 
 const WEATHER_CODES: Record<number, WeatherInfo> = {
-  0: { label: 'Clear sky', icon: '☀️' },
-  1: { label: 'Mainly clear', icon: '🌤️' },
-  2: { label: 'Partly cloudy', icon: '⛅' },
-  3: { label: 'Overcast', icon: '☁️' },
-  45: { label: 'Fog', icon: '🌫️' },
-  48: { label: 'Freezing fog', icon: '🌫️' },
-  51: { label: 'Light drizzle', icon: '🌦️' },
-  53: { label: 'Drizzle', icon: '🌦️' },
-  55: { label: 'Heavy drizzle', icon: '🌧️' },
-  56: { label: 'Freezing drizzle', icon: '🌧️' },
-  57: { label: 'Freezing drizzle', icon: '🌧️' },
-  61: { label: 'Light rain', icon: '🌧️' },
-  63: { label: 'Rain', icon: '🌧️' },
-  65: { label: 'Heavy rain', icon: '🌧️' },
-  66: { label: 'Freezing rain', icon: '🌧️' },
-  67: { label: 'Freezing rain', icon: '🌧️' },
-  71: { label: 'Light snow', icon: '🌨️' },
-  73: { label: 'Snow', icon: '🌨️' },
-  75: { label: 'Heavy snow', icon: '❄️' },
-  77: { label: 'Snow grains', icon: '🌨️' },
-  80: { label: 'Rain showers', icon: '🌦️' },
-  81: { label: 'Rain showers', icon: '🌦️' },
-  82: { label: 'Violent rain showers', icon: '⛈️' },
-  85: { label: 'Snow showers', icon: '🌨️' },
-  86: { label: 'Snow showers', icon: '🌨️' },
-  95: { label: 'Thunderstorm', icon: '⛈️' },
-  96: { label: 'Thunderstorm with hail', icon: '⛈️' },
-  99: { label: 'Thunderstorm with hail', icon: '⛈️' },
+  0: { label: 'Clear sky', kind: 'clear' },
+  1: { label: 'Mainly clear', kind: 'clear' },
+  2: { label: 'Partly cloudy', kind: 'partlyCloudy' },
+  3: { label: 'Overcast', kind: 'cloudy' },
+  45: { label: 'Fog', kind: 'fog' },
+  48: { label: 'Freezing fog', kind: 'fog' },
+  51: { label: 'Light drizzle', kind: 'drizzle' },
+  53: { label: 'Drizzle', kind: 'drizzle' },
+  55: { label: 'Heavy drizzle', kind: 'drizzle' },
+  56: { label: 'Freezing drizzle', kind: 'drizzle' },
+  57: { label: 'Freezing drizzle', kind: 'drizzle' },
+  61: { label: 'Light rain', kind: 'rain' },
+  63: { label: 'Rain', kind: 'rain' },
+  65: { label: 'Heavy rain', kind: 'rain' },
+  66: { label: 'Freezing rain', kind: 'rain' },
+  67: { label: 'Freezing rain', kind: 'rain' },
+  71: { label: 'Light snow', kind: 'snow' },
+  73: { label: 'Snow', kind: 'snow' },
+  75: { label: 'Heavy snow', kind: 'snow' },
+  77: { label: 'Snow grains', kind: 'snow' },
+  80: { label: 'Rain showers', kind: 'rain' },
+  81: { label: 'Rain showers', kind: 'rain' },
+  82: { label: 'Violent rain showers', kind: 'rain' },
+  85: { label: 'Snow showers', kind: 'snow' },
+  86: { label: 'Snow showers', kind: 'snow' },
+  95: { label: 'Thunderstorm', kind: 'storm' },
+  96: { label: 'Thunderstorm with hail', kind: 'hail' },
+  99: { label: 'Thunderstorm with hail', kind: 'hail' },
 };
 
-export function describeWeather(code: number, isDay = true): WeatherInfo {
-  const info = WEATHER_CODES[code] ?? { label: 'Unknown', icon: '🌡️' };
-
-  if (!isDay && code <= 1) {
-    return { ...info, icon: '🌙' };
-  }
-
-  return info;
+export function describeWeather(code: number): WeatherInfo {
+  return WEATHER_CODES[code] ?? { label: 'Unknown', kind: 'cloudy' };
 }

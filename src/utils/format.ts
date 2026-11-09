@@ -1,3 +1,5 @@
+import type { City } from '@/api/geocoding';
+
 const WEEKDAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
 export const formatTemperature = (celsius: number) => `${Math.round(celsius)}°`;
@@ -9,4 +11,8 @@ export function formatDay(date: string) {
   const [year, month, day] = date.split('-').map(Number);
 
   return WEEKDAYS[new Date(Date.UTC(year, month - 1, day)).getUTCDay()];
+}
+
+export function formatPlace({ name, region, country }: City) {
+  return [region !== name ? region : undefined, country].filter(Boolean).join(', ');
 }
