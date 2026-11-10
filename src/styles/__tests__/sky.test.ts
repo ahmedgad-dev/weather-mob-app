@@ -1,4 +1,17 @@
-import { NIGHT_SKY, skyFor } from '../sky';
+import { celestialFor, NIGHT_SKY, skyFor } from '../sky';
+
+describe('celestialFor', () => {
+  it('shows the sun by day and the moon by night when the sky is open', () => {
+    expect(celestialFor('clear', true)).toBe('sun');
+    expect(celestialFor('partlyCloudy', false)).toBe('moon');
+  });
+
+  it('hides both behind cloud, rain and storms', () => {
+    expect(celestialFor('cloudy', true)).toBeUndefined();
+    expect(celestialFor('rain', false)).toBeUndefined();
+    expect(celestialFor('storm', true)).toBeUndefined();
+  });
+});
 
 describe('skyFor', () => {
   it('uses a different sky for a clear day and a clear night', () => {

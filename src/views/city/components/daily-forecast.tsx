@@ -22,7 +22,7 @@ export function DailyForecast({ days }: { days: DailyItem[] }) {
         <View key={day.date} style={[styles.row, index > 0 && styles.divider]}>
           <AppText style={styles.day}>{index === 0 ? 'Today' : formatDay(day.date)}</AppText>
           <View style={styles.weather}>
-            <WeatherIcon kind={describeWeather(day.weatherCode).kind} size={22} />
+            <WeatherIcon kind={describeWeather(day.weatherCode).kind} size={40} />
             {day.precipitationChance > 0 ? (
               <AppText variant="caption" style={styles.rain}>
                 {day.precipitationChance}%
@@ -71,7 +71,7 @@ const styles = StyleSheet.create({
     width: 56,
   },
   weather: {
-    width: 64,
+    width: 80,
     flexDirection: 'row',
     alignItems: 'center',
     gap: spacing.xs,

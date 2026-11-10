@@ -45,20 +45,20 @@ export function CityCard({ city, badge, onPress }: Props) {
           <AppText variant="caption" tone="secondary" numberOfLines={1}>
             {formatPlace(city)}
           </AppText>
-          <View style={styles.condition}>
-            {weather && forecast ? (
-              <WeatherIcon kind={weather.kind} isDay={forecast.current.isDay} size={18} />
-            ) : null}
-            <AppText variant="caption" tone="secondary">
-              {isError ? 'Couldn’t load' : (weather?.label ?? ' ')}
-            </AppText>
-          </View>
+          <AppText variant="caption" tone="secondary" style={styles.condition}>
+            {isError ? 'Couldn’t load' : (weather?.label ?? ' ')}
+          </AppText>
         </View>
 
         <View style={styles.temperatures}>
-          <AppText style={styles.temperature}>
-            {forecast ? formatTemperature(forecast.current.temperature) : '--°'}
-          </AppText>
+          <View style={styles.reading}>
+            {weather && forecast ? (
+              <WeatherIcon kind={weather.kind} isDay={forecast.current.isDay} size={52} animated />
+            ) : null}
+            <AppText style={styles.temperature}>
+              {forecast ? formatTemperature(forecast.current.temperature) : '--°'}
+            </AppText>
+          </View>
           {today ? (
             <AppText variant="caption" tone="secondary">
               H:{formatTemperature(today.max)} L:{formatTemperature(today.min)}
@@ -90,14 +90,16 @@ const styles = StyleSheet.create({
     marginBottom: spacing.xs,
   },
   condition: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing.xs,
     marginTop: 'auto',
   },
   temperatures: {
     alignItems: 'flex-end',
     justifyContent: 'space-between',
+  },
+  reading: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.xs,
   },
   temperature: {
     fontSize: 48,

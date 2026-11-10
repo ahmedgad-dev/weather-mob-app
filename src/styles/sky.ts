@@ -16,6 +16,15 @@ const SKIES = {
 
 export const NIGHT_SKY: Sky = SKIES.clearNight;
 
+export type Celestial = 'sun' | 'moon';
+
+// Behind full cloud, rain or snow there is nothing to see.
+export function celestialFor(kind: WeatherKind, isDay: boolean): Celestial | undefined {
+  if (kind !== 'clear' && kind !== 'partlyCloudy') return undefined;
+
+  return isDay ? 'sun' : 'moon';
+}
+
 export function skyFor(kind: WeatherKind, isDay: boolean): Sky {
   switch (kind) {
     case 'storm':

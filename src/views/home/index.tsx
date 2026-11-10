@@ -11,19 +11,20 @@ import { Icon } from '@/components/ui/icon';
 import { SkyBackground } from '@/components/ui/sky-background';
 import { useRefreshByUser } from '@/hooks/use-refresh-by-user';
 import { useCitiesHydrated, useCitiesStore } from '@/store/cities-store';
-import { NIGHT_SKY } from '@/styles/sky';
 import { colors, radius, spacing } from '@/styles/tokens';
 import { CityCard } from '@/views/home/components/city-card';
 import { LocationCard } from '@/views/home/components/location-card';
 import { SearchField } from '@/views/home/components/search-field';
 import { SearchResults } from '@/views/home/components/search-results';
 import { useCitySearch } from '@/views/home/hooks/use-city-search';
+import { useHomeSky } from '@/views/home/hooks/use-home-sky';
 
 export function HomeView() {
   const insets = useSafeAreaInsets();
   const queryClient = useQueryClient();
   const [query, setQuery] = useState('');
   const search = useCitySearch(query);
+  const { sky, celestial } = useHomeSky();
   const hydrated = useCitiesHydrated();
   const cities = useCitiesStore((state) => state.cities);
   const addCity = useCitiesStore((state) => state.addCity);
@@ -43,7 +44,7 @@ export function HomeView() {
   }
 
   return (
-    <SkyBackground sky={NIGHT_SKY}>
+    <SkyBackground sky={sky} celestial={celestial}>
       <FlatList
         data={isSearching || !hydrated ? [] : cities}
         keyExtractor={(city) => String(city.id)}

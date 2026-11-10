@@ -5,6 +5,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { AppText } from '@/components/ui/app-text';
 import { IconButton } from '@/components/ui/icon-button';
 import { SkyBackground } from '@/components/ui/sky-background';
+import { WeatherIcon } from '@/components/weather-icon';
 import { describeWeather } from '@/constants/weather-codes';
 import { CURRENT_LOCATION_ID, useCurrentLocation } from '@/hooks/use-current-location';
 import { useForecast } from '@/hooks/use-forecast';
@@ -56,6 +57,7 @@ export function CityView({ id }: { id: string }) {
           }>
           <View style={styles.hero}>
             <AppText variant="title">{city.name}</AppText>
+            <WeatherIcon kind={weather.kind} isDay={forecast.current.isDay} size={112} animated />
             <AppText variant="display">{formatTemperature(forecast.current.temperature)}</AppText>
             <AppText variant="headline" tone="secondary">
               {weather.label}

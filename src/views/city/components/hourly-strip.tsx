@@ -22,7 +22,11 @@ export function HourlyStrip({ hours }: { hours: HourlyItem[] }) {
             <AppText variant="caption" tone="secondary">
               {index === 0 ? 'Now' : formatHour(item.time)}
             </AppText>
-            <WeatherIcon kind={describeWeather(item.weatherCode).kind} isDay={item.isDay} />
+            <WeatherIcon
+              kind={describeWeather(item.weatherCode).kind}
+              isDay={item.isDay}
+              size={44}
+            />
             <View style={styles.rainSlot}>
               {item.precipitationChance > 0 ? (
                 <AppText variant="caption" style={styles.rain}>
