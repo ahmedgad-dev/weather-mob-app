@@ -5,7 +5,7 @@ import { GlassCard } from '@/components/ui/glass-card';
 import type { IconName } from '@/components/ui/icon';
 
 type Props = {
-  icon: IconName;
+  icon?: IconName;
   label: string;
   value: string;
 };

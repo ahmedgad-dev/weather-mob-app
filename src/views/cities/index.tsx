@@ -9,22 +9,24 @@ import type { City } from '@/api/geocoding';
 import { AppText } from '@/components/ui/app-text';
 import { Icon } from '@/components/ui/icon';
 import { SkyBackground } from '@/components/ui/sky-background';
+import { useBottomInset } from '@/hooks/use-bottom-inset';
+import { useLocationSky } from '@/hooks/use-location-sky';
 import { useRefreshByUser } from '@/hooks/use-refresh-by-user';
 import { useCitiesHydrated, useCitiesStore } from '@/store/cities-store';
 import { colors, radius, spacing } from '@/styles/tokens';
-import { CityCard } from '@/views/home/components/city-card';
-import { LocationCard } from '@/views/home/components/location-card';
-import { SearchField } from '@/views/home/components/search-field';
-import { SearchResults } from '@/views/home/components/search-results';
-import { useCitySearch } from '@/views/home/hooks/use-city-search';
-import { useHomeSky } from '@/views/home/hooks/use-home-sky';
+import { CityCard } from '@/views/cities/components/city-card';
+import { LocationCard } from '@/views/cities/components/location-card';
+import { SearchField } from '@/views/cities/components/search-field';
+import { SearchResults } from '@/views/cities/components/search-results';
+import { useCitySearch } from '@/views/cities/hooks/use-city-search';
 
-export function HomeView() {
+export function CitiesView() {
   const insets = useSafeAreaInsets();
+  const bottomInset = useBottomInset();
   const queryClient = useQueryClient();
   const [query, setQuery] = useState('');
   const search = useCitySearch(query);
-  const { sky, celestial } = useHomeSky();
+  const { sky, celestial } = useLocationSky();
   const hydrated = useCitiesHydrated();
   const cities = useCitiesStore((state) => state.cities);
   const addCity = useCitiesStore((state) => state.addCity);
@@ -52,7 +54,7 @@ export function HomeView() {
         keyboardDismissMode="on-drag"
         contentContainerStyle={[
           styles.list,
-          { paddingTop: insets.top + spacing.lg, paddingBottom: insets.bottom + spacing.xl },
+          { paddingTop: insets.top + spacing.lg, paddingBottom: bottomInset + spacing.xl },
         ]}
         refreshControl={
           <RefreshControl
@@ -65,7 +67,7 @@ export function HomeView() {
         // the TextInput and close the keyboard after every letter.
         ListHeaderComponent={
           <View style={styles.header}>
-            <AppText variant="title">Weather</AppText>
+            <AppText variant="title">Cities</AppText>
             <SearchField value={query} onChangeText={setQuery} isLoading={search.isFetching} />
             {isSearching ? (
               <SearchResults

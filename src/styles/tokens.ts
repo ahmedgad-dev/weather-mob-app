@@ -23,6 +23,8 @@ export const colors = {
   glass: 'rgba(255, 255, 255, 0.14)',
   glassBorder: 'rgba(255, 255, 255, 0.22)',
   divider: 'rgba(255, 255, 255, 0.16)',
+  // Opaque until a blur sits behind it: a see-through bar lets scrolling text show through the labels.
+  tabBar: '#081020',
   track: 'rgba(255, 255, 255, 0.18)',
   rain: '#8FD3FF',
   sun: '#FFD166',

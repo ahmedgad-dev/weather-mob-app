@@ -2,11 +2,14 @@ import { Redirect, router } from 'expo-router';
 import { RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { DetailTile } from '@/components/detail-tile';
+import { ScreenState } from '@/components/screen-state';
 import { AppText } from '@/components/ui/app-text';
 import { IconButton } from '@/components/ui/icon-button';
 import { SkyBackground } from '@/components/ui/sky-background';
 import { WeatherIcon } from '@/components/weather-icon';
 import { describeWeather } from '@/constants/weather-codes';
+import { useBottomInset } from '@/hooks/use-bottom-inset';
 import { CURRENT_LOCATION_ID, useCurrentLocation } from '@/hooks/use-current-location';
 import { useForecast } from '@/hooks/use-forecast';
 import { useRefreshByUser } from '@/hooks/use-refresh-by-user';
@@ -15,13 +18,18 @@ import { NIGHT_SKY, skyFor } from '@/styles/sky';
 import { colors, spacing } from '@/styles/tokens';
 import { formatTemperature } from '@/utils/format';
 import { DailyForecast } from '@/views/city/components/daily-forecast';
-import { DetailTile } from '@/views/city/components/detail-tile';
 import { HourlyStrip } from '@/views/city/components/hourly-strip';
-import { ScreenState } from '@/views/city/components/screen-state';
 import { getNext24Hours } from '@/views/city/utils/forecast';
 
-export function CityView({ id }: { id: string }) {
+type Props = {
+  id: string;
+  // False when the view is a tab's root screen, where there is nothing to go back to.
+  showBack?: boolean;
+};
+
+export function CityView({ id, showBack = true }: Props) {
   const insets = useSafeAreaInsets();
+  const bottomInset = useBottomInset();
   const hydrated = useCitiesHydrated();
   const isCurrentLocation = id === CURRENT_LOCATION_ID;
   const savedCity = useCitiesStore((state) =>
@@ -33,7 +41,7 @@ export function CityView({ id }: { id: string }) {
   const { isRefreshingByUser, refreshByUser } = useRefreshByUser(refetch);
 
   if (!isCurrentLocation && hydrated && !savedCity) {
-    return <Redirect href="/" />;
+    return <Redirect href="/cities" />;
   }
 
   const weather = forecast ? describeWeather(forecast.current.weatherCode) : undefined;
@@ -42,12 +50,14 @@ export function CityView({ id }: { id: string }) {
   return (
     <SkyBackground sky={sky}>
       <View style={[styles.topBar, { paddingTop: insets.top + spacing.sm }]}>
-        <IconButton icon="back" accessibilityLabel="Back" onPress={() => router.back()} />
+        {showBack ? (
+          <IconButton icon="back" accessibilityLabel="Back" onPress={() => router.back()} />
+        ) : null}
       </View>
 
       {city && forecast && weather ? (
         <ScrollView
-          contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + spacing.xxl }]}
+          contentContainerStyle={[styles.content, { paddingBottom: bottomInset + spacing.xxl }]}
           refreshControl={
             <RefreshControl
               refreshing={isRefreshingByUser}
@@ -88,6 +98,7 @@ export function CityView({ id }: { id: string }) {
       ) : (
         <ScreenState
           isBusy={!city || isFetching}
+          errorTitle="Couldn’t load the forecast"
           error={error?.message ?? null}
           onRetry={() => refetch()}
         />

@@ -1,4 +1,5 @@
 import { SymbolView, type SymbolViewProps } from 'expo-symbols';
+import type { ColorValue } from 'react-native';
 
 import { colors } from '@/styles/tokens';
 
@@ -18,6 +19,19 @@ const ICONS = {
   humidity: { ios: 'humidity.fill', android: 'humidity_percentage', web: 'humidity_percentage' },
   wind: { ios: 'wind', android: 'air', web: 'air' },
   location: { ios: 'location.fill', android: 'location_on', web: 'location_on' },
+  weather: { ios: 'cloud.sun.fill', android: 'partly_cloudy_day', web: 'partly_cloudy_day' },
+  cities: { ios: 'list.bullet', android: 'format_list_bulleted', web: 'format_list_bulleted' },
+  air: { ios: 'aqi.medium', android: 'airwave', web: 'airwave' },
+  uv: { ios: 'sun.max.fill', android: 'light_mode', web: 'light_mode' },
+  account: { ios: 'person.crop.circle.fill', android: 'account_circle', web: 'account_circle' },
+  settings: { ios: 'gearshape.fill', android: 'settings', web: 'settings' },
+  signOut: {
+    ios: 'rectangle.portrait.and.arrow.right',
+    android: 'logout',
+    web: 'logout',
+  },
+  external: { ios: 'arrow.up.right', android: 'open_in_new', web: 'open_in_new' },
+  chevron: { ios: 'chevron.right', android: 'chevron_right', web: 'chevron_right' },
 } satisfies Record<string, SymbolName>;
 
 export type IconName = keyof typeof ICONS;
@@ -25,7 +39,7 @@ export type IconName = keyof typeof ICONS;
 type Props = {
   name: IconName;
   size?: number;
-  color?: string;
+  color?: ColorValue;
 };
 
 export function Icon({ name, size = 20, color = colors.textPrimary }: Props) {

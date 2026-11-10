@@ -3,9 +3,9 @@ import { useCurrentLocation } from '@/hooks/use-current-location';
 import { useForecast } from '@/hooks/use-forecast';
 import { celestialFor, NIGHT_SKY, skyFor } from '@/styles/sky';
 
-// The home screen wears the sky of wherever the user is. TanStack Query shares these two queries
-// with LocationCard, so this adds no requests.
-export function useHomeSky() {
+// The tab screens wear the sky of wherever the user is. TanStack Query shares these two queries
+// across every screen that calls this, so it adds no requests.
+export function useLocationSky() {
   const { city, isPending } = useCurrentLocation();
   const { data: forecast } = useForecast(isPending ? undefined : city);
 

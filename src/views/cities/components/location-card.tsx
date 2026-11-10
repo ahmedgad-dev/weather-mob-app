@@ -4,13 +4,9 @@ import { ActivityIndicator, Linking, Pressable, StyleSheet, View } from 'react-n
 
 import { AppText } from '@/components/ui/app-text';
 import { GlassCard } from '@/components/ui/glass-card';
-import {
-  CURRENT_LOCATION_ID,
-  useCurrentLocation,
-  type CurrentLocation,
-} from '@/hooks/use-current-location';
+import { useCurrentLocation, type CurrentLocation } from '@/hooks/use-current-location';
 import { colors, spacing } from '@/styles/tokens';
-import { CityCard } from '@/views/home/components/city-card';
+import { CityCard } from '@/views/cities/components/city-card';
 
 export function LocationCard() {
   const { location, city, isFallback, isPending, refetch } = useCurrentLocation();
@@ -41,7 +37,8 @@ export function LocationCard() {
       <CityCard
         city={city}
         badge={isFallback ? 'Default city' : 'My location'}
-        onPress={() => router.push({ pathname: '/city/[id]', params: { id: CURRENT_LOCATION_ID } })}
+        // The Weather tab already shows this place, so switch to it rather than push a copy.
+        onPress={() => router.navigate('/')}
       />
       {location && location.status !== 'granted' ? (
         <View style={styles.hint}>

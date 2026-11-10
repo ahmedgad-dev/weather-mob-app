@@ -7,7 +7,7 @@ import { GlassCard } from '@/components/ui/glass-card';
 import { Icon } from '@/components/ui/icon';
 import { colors, spacing } from '@/styles/tokens';
 import { formatPlace } from '@/utils/format';
-import { MIN_QUERY_LENGTH } from '@/views/home/hooks/use-city-search';
+import { MIN_QUERY_LENGTH } from '@/views/cities/hooks/use-city-search';
 
 type Props = {
   query: string;

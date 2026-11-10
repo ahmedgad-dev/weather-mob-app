@@ -5,18 +5,19 @@ import { colors, radius, spacing } from '@/styles/tokens';
 
 type Props = {
   isBusy: boolean;
+  errorTitle: string;
   error: string | null;
   onRetry: () => void;
 };
 
-export function ScreenState({ isBusy, error, onRetry }: Props) {
+export function ScreenState({ isBusy, errorTitle, error, onRetry }: Props) {
   return (
     <View style={styles.container}>
       {isBusy ? (
         <ActivityIndicator size="large" color={colors.textPrimary} />
       ) : (
         <>
-          <AppText variant="headline">Couldn&apos;t load the forecast</AppText>
+          <AppText variant="headline">{errorTitle}</AppText>
           {error ? <AppText tone="secondary">{error}</AppText> : null}
           <Pressable
             onPress={onRetry}

@@ -38,7 +38,8 @@
         {
           "locationWhenInUsePermission": "Weather uses your location to show the forecast where you are."
         }
-      ]
+      ],
+      "expo-secure-store"
     ],
     "experiments": {
       "typedRoutes": true,
