@@ -2,7 +2,6 @@ import * as Location from 'expo-location';
 import { router } from 'expo-router';
 import { ActivityIndicator, Linking, Pressable, StyleSheet, View } from 'react-native';
 
-import { CityCard } from '@/components/city-card';
 import { AppText } from '@/components/ui/app-text';
 import { GlassCard } from '@/components/ui/glass-card';
 import {
@@ -10,7 +9,8 @@ import {
   useCurrentLocation,
   type CurrentLocation,
 } from '@/hooks/use-current-location';
-import { colors, spacing } from '@/theme/tokens';
+import { colors, spacing } from '@/styles/tokens';
+import { CityCard } from '@/views/home/components/city-card';
 
 export function LocationCard() {
   const { location, city, isFallback, isPending, refetch } = useCurrentLocation();

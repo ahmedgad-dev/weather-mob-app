@@ -2,7 +2,7 @@ import { StyleSheet, View, type ViewProps } from 'react-native';
 
 import { AppText } from '@/components/ui/app-text';
 import { Icon, type IconName } from '@/components/ui/icon';
-import { colors, radius, spacing } from '@/theme/tokens';
+import { colors, radius, spacing } from '@/styles/tokens';
 
 type Props = ViewProps & {
   title?: string;

@@ -1,7 +1,7 @@
 import { Pressable, StyleSheet } from 'react-native';
 
 import { Icon, type IconName } from '@/components/ui/icon';
-import { colors, radius } from '@/theme/tokens';
+import { colors, radius } from '@/styles/tokens';
 
 type Props = {
   icon: IconName;

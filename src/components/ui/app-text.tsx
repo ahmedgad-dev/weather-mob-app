@@ -1,6 +1,6 @@
 import { Text, type TextProps } from 'react-native';
 
-import { colors, typography } from '@/theme/tokens';
+import { colors, typography } from '@/styles/tokens';
 
 type Variant = keyof typeof typography;
 type Tone = 'primary' | 'secondary' | 'tertiary';

@@ -1,7 +1,7 @@
 import { ActivityIndicator, Pressable, StyleSheet, TextInput, View } from 'react-native';
 
 import { Icon } from '@/components/ui/icon';
-import { colors, radius, spacing } from '@/theme/tokens';
+import { colors, radius, spacing } from '@/styles/tokens';
 
 type Props = {
   value: string;

@@ -5,9 +5,9 @@ import type { City } from '@/api/geocoding';
 import { AppText } from '@/components/ui/app-text';
 import { GlassCard } from '@/components/ui/glass-card';
 import { Icon } from '@/components/ui/icon';
-import { MIN_QUERY_LENGTH } from '@/hooks/use-city-search';
-import { colors, spacing } from '@/theme/tokens';
+import { colors, spacing } from '@/styles/tokens';
 import { formatPlace } from '@/utils/format';
+import { MIN_QUERY_LENGTH } from '@/views/home/hooks/use-city-search';
 
 type Props = {
   query: string;

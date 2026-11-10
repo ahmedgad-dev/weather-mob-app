@@ -5,7 +5,7 @@ import { AppText } from '@/components/ui/app-text';
 import { GlassCard } from '@/components/ui/glass-card';
 import { WeatherIcon } from '@/components/weather-icon';
 import { describeWeather } from '@/constants/weather-codes';
-import { colors, spacing } from '@/theme/tokens';
+import { colors, spacing } from '@/styles/tokens';
 import { formatHour, formatTemperature } from '@/utils/format';
 
 export function HourlyStrip({ hours }: { hours: HourlyItem[] }) {

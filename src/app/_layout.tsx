@@ -4,9 +4,9 @@ import { StatusBar } from 'expo-status-bar';
 import { StyleSheet } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
+import { queryClient } from '@/config/query-client';
 import { useAppStateFocus } from '@/hooks/use-app-state-focus';
-import { queryClient } from '@/lib/query-client';
-import { NIGHT_SKY } from '@/theme/sky';
+import { NIGHT_SKY } from '@/styles/sky';
 
 export default function RootLayout() {
   useAppStateFocus();

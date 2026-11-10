@@ -2,7 +2,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import type { ReactNode } from 'react';
 import { StyleSheet } from 'react-native';
 
-import type { Sky } from '@/theme/sky';
+import type { Sky } from '@/styles/sky';
 
 export function SkyBackground({ sky, children }: { sky: Sky; children: ReactNode }) {
   return (

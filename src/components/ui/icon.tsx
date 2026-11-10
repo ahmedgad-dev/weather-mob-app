@@ -1,6 +1,6 @@
 import { SymbolView, type SymbolViewProps } from 'expo-symbols';
 
-import { colors } from '@/theme/tokens';
+import { colors } from '@/styles/tokens';
 
 // SF Symbols on iOS, Material Symbols on Android and web.
 export type SymbolName = Extract<SymbolViewProps['name'], object>;

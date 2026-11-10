@@ -1,7 +1,7 @@
 import { ActivityIndicator, Pressable, StyleSheet, View } from 'react-native';
 
 import { AppText } from '@/components/ui/app-text';
-import { colors, radius, spacing } from '@/theme/tokens';
+import { colors, radius, spacing } from '@/styles/tokens';
 
 type Props = {
   isBusy: boolean;

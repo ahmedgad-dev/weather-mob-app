@@ -6,9 +6,9 @@ import { AppText } from '@/components/ui/app-text';
 import { GlassCard } from '@/components/ui/glass-card';
 import { WeatherIcon } from '@/components/weather-icon';
 import { describeWeather } from '@/constants/weather-codes';
-import { colors, radius, spacing } from '@/theme/tokens';
+import { colors, radius, spacing } from '@/styles/tokens';
 import { formatDay, formatTemperature } from '@/utils/format';
-import { getTemperatureRange } from '@/utils/forecast';
+import { getTemperatureRange } from '@/views/city/utils/forecast';
 
 type Range = { min: number; max: number };
 

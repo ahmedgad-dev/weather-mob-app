@@ -2,7 +2,7 @@ import { SymbolView } from 'expo-symbols';
 
 import type { SymbolName } from '@/components/ui/icon';
 import type { WeatherKind } from '@/constants/weather-codes';
-import { colors } from '@/theme/tokens';
+import { colors } from '@/styles/tokens';
 
 const DAY: Record<WeatherKind, SymbolName> = {
   clear: { ios: 'sun.max.fill', android: 'sunny', web: 'sunny' },

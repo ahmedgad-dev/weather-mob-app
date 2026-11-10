@@ -7,8 +7,8 @@ import { Icon } from '@/components/ui/icon';
 import { WeatherIcon } from '@/components/weather-icon';
 import { describeWeather } from '@/constants/weather-codes';
 import { useForecast } from '@/hooks/use-forecast';
-import { NIGHT_SKY, skyFor } from '@/theme/sky';
-import { colors, radius, spacing } from '@/theme/tokens';
+import { NIGHT_SKY, skyFor } from '@/styles/sky';
+import { colors, radius, spacing } from '@/styles/tokens';
 import { formatPlace, formatTemperature } from '@/utils/format';
 
 type Props = {
