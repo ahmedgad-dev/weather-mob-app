@@ -67,7 +67,10 @@ export function CitiesView() {
         // the TextInput and close the keyboard after every letter.
         ListHeaderComponent={
           <View style={styles.header}>
-            <AppText variant="title">Cities</AppText>
+            <View>
+              <AppText variant="title">Cities</AppText>
+              <AppText tone="secondary">Ahmed Gad dev</AppText>
+            </View>
             <SearchField value={query} onChangeText={setQuery} isLoading={search.isFetching} />
             {isSearching ? (
               <SearchResults
