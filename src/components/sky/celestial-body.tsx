@@ -1,8 +1,8 @@
 import { StyleSheet, View } from 'react-native';
-import Animated, { css, useReducedMotion } from 'react-native-reanimated';
+import Animated, { css } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import type { Celestial } from '@/styles/sky';
+import type { Celestial } from '@/components/sky/scenes';
 import { spacing } from '@/styles/tokens';
 
 const DISC = 64;
@@ -21,15 +21,19 @@ const LOOKS = {
   },
 } as const;
 
-export function CelestialBody({ body }: { body: Celestial }) {
+export function CelestialBody({ body, isRunning }: { body: Celestial; isRunning: boolean }) {
   const insets = useSafeAreaInsets();
-  const reduceMotion = useReducedMotion();
   const look = LOOKS[body];
 
   return (
     <View style={[styles.anchor, { top: insets.top + spacing.sm }]}>
       <Animated.View
-        style={[styles.halo, { backgroundImage: look.halo }, !reduceMotion && animations.breathe]}
+        style={[
+          styles.halo,
+          { backgroundImage: look.halo },
+          animations.breathe,
+          { animationPlayState: isRunning ? 'running' : 'paused' },
+        ]}
       />
       <View style={[styles.disc, { backgroundImage: look.disc, boxShadow: look.glow }]} />
     </View>

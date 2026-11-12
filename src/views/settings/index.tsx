@@ -3,9 +3,9 @@ import * as WebBrowser from 'expo-web-browser';
 import { Linking, ScrollView, StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { SkyBackground } from '@/components/sky/sky-background';
 import { AppText } from '@/components/ui/app-text';
 import { ListGroup, ListRow } from '@/components/ui/list-group';
-import { SkyBackground } from '@/components/ui/sky-background';
 import { useBottomInset } from '@/hooks/use-bottom-inset';
 import { useCurrentLocation, type CurrentLocation } from '@/hooks/use-current-location';
 import { useLocationSky } from '@/hooks/use-location-sky';
@@ -17,11 +17,11 @@ const open = (url: string) => WebBrowser.openBrowserAsync(url);
 export function SettingsView() {
   const insets = useSafeAreaInsets();
   const bottomInset = useBottomInset();
-  const { sky, celestial } = useLocationSky();
+  const sky = useLocationSky();
   const { location } = useCurrentLocation();
 
   return (
-    <SkyBackground sky={sky} celestial={celestial}>
+    <SkyBackground weather={sky}>
       <ScrollView
         contentContainerStyle={[
           styles.content,

@@ -2,12 +2,12 @@ import { router } from 'expo-router';
 import { Alert, ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { SkyBackground } from '@/components/sky/sky-background';
 import { AppText } from '@/components/ui/app-text';
 import { Button } from '@/components/ui/button';
 import { GlassCard } from '@/components/ui/glass-card';
 import { Icon } from '@/components/ui/icon';
 import { ListGroup, ListRow } from '@/components/ui/list-group';
-import { SkyBackground } from '@/components/ui/sky-background';
 import { useBottomInset } from '@/hooks/use-bottom-inset';
 import { useLocationSky } from '@/hooks/use-location-sky';
 import { useCitiesStore } from '@/store/cities-store';
@@ -17,12 +17,12 @@ import { colors, radius, spacing } from '@/styles/tokens';
 export function AccountView() {
   const insets = useSafeAreaInsets();
   const bottomInset = useBottomInset();
-  const { sky, celestial } = useLocationSky();
+  const sky = useLocationSky();
   const hydrated = useSessionHydrated();
   const session = useSessionStore((state) => state.session);
 
   return (
-    <SkyBackground sky={sky} celestial={celestial}>
+    <SkyBackground weather={sky}>
       <ScrollView
         contentContainerStyle={[
           styles.content,

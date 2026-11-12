@@ -3,9 +3,9 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { DetailTile } from '@/components/detail-tile';
 import { ScreenState } from '@/components/screen-state';
+import { SkyBackground } from '@/components/sky/sky-background';
 import { AppText } from '@/components/ui/app-text';
 import { GlassCard } from '@/components/ui/glass-card';
-import { SkyBackground } from '@/components/ui/sky-background';
 import { useBottomInset } from '@/hooks/use-bottom-inset';
 import { useCurrentLocation } from '@/hooks/use-current-location';
 import { useLocationSky } from '@/hooks/use-location-sky';
@@ -25,14 +25,14 @@ const formatUv = (value: number | null) =>
 export function AirView() {
   const insets = useSafeAreaInsets();
   const bottomInset = useBottomInset();
-  const { sky, celestial } = useLocationSky();
+  const sky = useLocationSky();
   const { city, isPending: isLocating } = useCurrentLocation();
   const { data: air, error, isFetching, refetch } = useAirQuality(isLocating ? undefined : city);
   const { isRefreshingByUser, refreshByUser } = useRefreshByUser(refetch);
   const level = air?.usAqi != null ? aqiLevel(air.usAqi) : undefined;
 
   return (
-    <SkyBackground sky={sky} celestial={celestial}>
+    <SkyBackground weather={sky}>
       {air ? (
         <ScrollView
           contentContainerStyle={[

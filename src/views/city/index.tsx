@@ -4,9 +4,9 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { DetailTile } from '@/components/detail-tile';
 import { ScreenState } from '@/components/screen-state';
+import { SkyBackground } from '@/components/sky/sky-background';
 import { AppText } from '@/components/ui/app-text';
 import { IconButton } from '@/components/ui/icon-button';
-import { SkyBackground } from '@/components/ui/sky-background';
 import { WeatherIcon } from '@/components/weather-icon';
 import { describeWeather } from '@/constants/weather-codes';
 import { useBottomInset } from '@/hooks/use-bottom-inset';
@@ -14,7 +14,6 @@ import { CURRENT_LOCATION_ID, useCurrentLocation } from '@/hooks/use-current-loc
 import { useForecast } from '@/hooks/use-forecast';
 import { useRefreshByUser } from '@/hooks/use-refresh-by-user';
 import { useCitiesHydrated, useCitiesStore } from '@/store/cities-store';
-import { NIGHT_SKY, skyFor } from '@/styles/sky';
 import { colors, spacing } from '@/styles/tokens';
 import { formatTemperature } from '@/utils/format';
 import { DailyForecast } from '@/views/city/components/daily-forecast';
@@ -45,10 +44,11 @@ export function CityView({ id, showBack = true }: Props) {
   }
 
   const weather = forecast ? describeWeather(forecast.current.weatherCode) : undefined;
-  const sky = forecast && weather ? skyFor(weather.kind, forecast.current.isDay) : NIGHT_SKY;
+  const sky =
+    forecast && weather ? { kind: weather.kind, isDay: forecast.current.isDay } : undefined;
 
   return (
-    <SkyBackground sky={sky}>
+    <SkyBackground weather={sky} showCelestial={false}>
       <View style={[styles.topBar, { paddingTop: insets.top + spacing.sm }]}>
         {showBack ? (
           <IconButton icon="back" accessibilityLabel="Back" onPress={() => router.back()} />

@@ -4,12 +4,11 @@ import { useRef, useState } from 'react';
 import { Platform, ScrollView, StyleSheet, View, type TextInputInstance } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { SkyBackground } from '@/components/sky/sky-background';
 import { AppText } from '@/components/ui/app-text';
 import { Button } from '@/components/ui/button';
 import { IconButton } from '@/components/ui/icon-button';
-import { SkyBackground } from '@/components/ui/sky-background';
 import { useSessionStore } from '@/store/session-store';
-import { NIGHT_SKY } from '@/styles/sky';
 import { colors, spacing } from '@/styles/tokens';
 import { TextField } from '@/views/sign-in/components/text-field';
 import { authenticate, MIN_PASSWORD_LENGTH } from '@/views/sign-in/services/fake-auth';
@@ -32,7 +31,7 @@ export function SignInView() {
   const topInset = Platform.OS === 'ios' ? spacing.lg : insets.top + spacing.sm;
 
   return (
-    <SkyBackground sky={NIGHT_SKY}>
+    <SkyBackground>
       <ScrollView
         // Without this, the first tap on "Sign in" while the keyboard is up only closes the keyboard.
         keyboardShouldPersistTaps="handled"

@@ -6,9 +6,9 @@ import ReanimatedSwipeable from 'react-native-gesture-handler/ReanimatedSwipeabl
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import type { City } from '@/api/geocoding';
+import { SkyBackground } from '@/components/sky/sky-background';
 import { AppText } from '@/components/ui/app-text';
 import { Icon } from '@/components/ui/icon';
-import { SkyBackground } from '@/components/ui/sky-background';
 import { useBottomInset } from '@/hooks/use-bottom-inset';
 import { useLocationSky } from '@/hooks/use-location-sky';
 import { useRefreshByUser } from '@/hooks/use-refresh-by-user';
@@ -26,7 +26,7 @@ export function CitiesView() {
   const queryClient = useQueryClient();
   const [query, setQuery] = useState('');
   const search = useCitySearch(query);
-  const { sky, celestial } = useLocationSky();
+  const sky = useLocationSky();
   const hydrated = useCitiesHydrated();
   const cities = useCitiesStore((state) => state.cities);
   const addCity = useCitiesStore((state) => state.addCity);
@@ -46,7 +46,7 @@ export function CitiesView() {
   }
 
   return (
-    <SkyBackground sky={sky} celestial={celestial}>
+    <SkyBackground weather={sky}>
       <FlatList
         data={isSearching || !hydrated ? [] : cities}
         keyExtractor={(city) => String(city.id)}
